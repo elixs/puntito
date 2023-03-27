@@ -1,7 +1,7 @@
 extends MarginContainer
 
 
-const MAX_PLAYERS = 4
+const MAX_PLAYERS = 2
 const PORT = 5409
 
 @onready var user = %User
@@ -17,7 +17,7 @@ const PORT = 5409
 @onready var go = $PanelContainer/MarginContainer/Pending/HBoxContainer/Go
 
 # { id: true }
-var status = {1 : false}
+var status = { 1 : false }
 
 
 func _ready():
@@ -66,10 +66,11 @@ func _on_connection_failed() -> void:
 func _on_peer_connected(id: int) -> void:
 	Debug.print("peer_connected %d" % id)
 	rpc_id(id, "send_info", { "name": user.text })
+	if multiplayer.is_server():
+		status[id] = false
 
 func _on_peer_disconnected(id: int) -> void:
 	Debug.print("peer_disconnected %d" % id)
-	
 
 
 func _on_server_disconnected() -> void:
@@ -81,6 +82,8 @@ func _add_player(name: String, id: int):
 	label.name = str(id)
 	label.text = name
 	players.add_child(label)
+	Game.players.append(id)
+
 
 @rpc("any_peer", "reliable")
 func send_info(info: Dictionary) -> void:
@@ -94,9 +97,11 @@ func _paint_ready(id: int) -> void:
 		if child.name == str(id):
 			child.modulate = Color.GREEN_YELLOW
 
+
 func _on_go_pressed() -> void:
 	rpc("player_ready")
 	_paint_ready(multiplayer.get_unique_id())
+
 
 @rpc("reliable", "any_peer", "call_local")
 func player_ready():
@@ -109,6 +114,7 @@ func player_ready():
 			all_ok = all_ok and ok
 		if all_ok:
 			rpc("start_game")
+
 
 @rpc("any_peer", "call_local", "reliable")
 func start_game() -> void:
