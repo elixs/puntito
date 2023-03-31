@@ -16,6 +16,9 @@ const PORT = 5409
 @onready var cancel = $PanelContainer/MarginContainer/Pending/HBoxContainer/Cancel
 @onready var go = $PanelContainer/MarginContainer/Pending/HBoxContainer/Go
 
+@onready var info = $PanelContainer/MarginContainer/Start/Info
+
+
 # { id: true }
 var status = { 1 : false }
 
@@ -33,12 +36,25 @@ func _ready():
 	user.text = OS.get_environment("USERNAME")
 	
 	go.pressed.connect(_on_go_pressed)
+	
+	info.hide()
+	
+	Game.upnp_completed.connect(_on_upnp_completed)
 
+
+func _on_upnp_completed(status) -> void:
+	print(status)
+	if status == OK:
+		info.text = "Port Opened"
+	else:
+		info.text = "Error"
+	info.show()
 
 func _on_host_pressed() -> void:
 	Debug.print("host")
 	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT, MAX_PLAYERS)
+	var err = peer.create_server(PORT, MAX_PLAYERS)
+	print(err)
 	multiplayer.multiplayer_peer = peer
 	start.hide()
 	_add_player(user.text, multiplayer.get_unique_id())
@@ -48,7 +64,8 @@ func _on_host_pressed() -> void:
 func _on_join_pressed() -> void:
 	Debug.print("join")
 	var peer = ENetMultiplayerPeer.new()
-	peer.create_client(ip.text, PORT)
+	var err = peer.create_client(ip.text, PORT)
+	print(err)
 	multiplayer.multiplayer_peer = peer
 	start.hide()
 	_add_player(user.text, multiplayer.get_unique_id())

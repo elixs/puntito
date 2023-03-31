@@ -58,6 +58,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
 
+[node name="Info" type="Label" parent="PanelContainer/MarginContainer/Start"]
+visible = false
+layout_mode = 2
+
 [node name="Pending" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 unique_name_in_owner = true
 visible = false
