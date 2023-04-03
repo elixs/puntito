@@ -1,7 +1,6 @@
 class_name Player
 extends CharacterBody2D
 
-
 const SPEED = 300.0
 const JUMP_VELOCITY = -300.0
 const GRAVITY = 500
@@ -12,6 +11,11 @@ func init(id):
 	set_multiplayer_authority(id)
 	name = str(id)
 
+
+func _ready():
+	Debug.print(name)
+	set_multiplayer_authority(name.to_int())
+	
 
 func _physics_process(delta) -> void:
 	if is_multiplayer_authority():
@@ -27,7 +31,7 @@ func _physics_process(delta) -> void:
 
 		move_and_slide()
 		
-		rpc("send_position", global_position)
+#		rpc("send_position", global_position)
 		
 
 @rpc("unreliable_ordered")

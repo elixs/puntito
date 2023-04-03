@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://bi2oiirhwpknm"]
+
+[ext_resource type="Texture2D" uid="uid://cydypm22qjf02" path="res://icon.svg" id="1_jvvic"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5alr1"]
+size = Vector2(128, 128)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_m1vnp"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:linear_velocity")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath(".:angular_velocity")
+properties/3/spawn = true
+properties/3/sync = true
+
+[node name="RigidBody2D" type="RigidBody2D"]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_jvvic")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_5alr1")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_m1vnp")
