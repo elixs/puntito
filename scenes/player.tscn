@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0fkfta4y2fwb"]
+[gd_scene load_steps=8 format=3 uid="uid://d0fkfta4y2fwb"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_70sgl"]
 [ext_resource type="Texture2D" uid="uid://cg4jbdyiluftr" path="res://assets/foxyspritesheet.png" id="1_cw6ci"]
+[ext_resource type="Texture2D" uid="uid://cydypm22qjf02" path="res://icon.svg" id="3_3lf41"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_x0kwo"]
 radius = 8.0
@@ -11,6 +12,15 @@ height = 40.0
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/sync = true
+
+[sub_resource type="Curve" id="Curve_0wlsj"]
+_data = [Vector2(0, 0.869919), 0.0, -7.60576, 0, 0, Vector2(0.505204, 0), -1.19823, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_brkue"]
+min_value = -1.0
+_data = [Vector2(0.291332, -0.378048), 0.0, 0.0, 0, 0, Vector2(0.523682, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_70sgl")
@@ -28,3 +38,20 @@ shape = SubResource("CapsuleShape2D_x0kwo")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_interval = 1.0
 replication_config = SubResource("SceneReplicationConfig_cqqbk")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+amount = 10
+lifetime = 2.0
+local_coords = true
+texture = ExtResource("3_3lf41")
+emission_shape = 1
+emission_sphere_radius = 100.0
+gravity = Vector2(0, 245)
+initial_velocity_min = 100.0
+initial_velocity_max = 1000.0
+angular_velocity_min = 667.56
+angular_velocity_max = 667.56
+scale_amount_curve = SubResource("Curve_0wlsj")
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+hue_variation_curve = SubResource("Curve_brkue")

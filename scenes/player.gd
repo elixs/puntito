@@ -6,6 +6,11 @@ const JUMP_VELOCITY = -300.0
 const GRAVITY = 500
 const ACCELERATION = 4000
 
+var meh = 5 :
+	set(value):
+		meh = lerp(value, meh, 0.5)
+		prints("meh", meh)
+
 
 func init(id):
 	set_multiplayer_authority(id)
@@ -15,6 +20,8 @@ func init(id):
 func _ready():
 	Debug.print(name)
 	set_multiplayer_authority(name.to_int())
+	
+	meh = 10
 	
 
 func _physics_process(delta) -> void:
