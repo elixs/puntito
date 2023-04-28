@@ -42,3 +42,6 @@ gizmo_extents = 50.0
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
 spawn_path = NodePath("../Players")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(65, 243)

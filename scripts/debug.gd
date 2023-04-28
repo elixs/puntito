@@ -1,13 +1,17 @@
 extends Node
 
+@onready var canvas = CanvasLayer.new()
 @onready var container = VBoxContainer.new()
 
 func _ready() -> void:
-	add_child(container)
+	add_child(canvas)
+	canvas.add_child(container)
 
 func print(message: Variant) -> void:
 	if not multiplayer.multiplayer_peer is OfflineMultiplayerPeer:
-		print_rich("[b]%s:[/b] " % (("Server") if multiplayer.is_server() else "Client"), message)
+		var type = "Server" if multiplayer.is_server() else "Client"
+		print_rich("[b]%s:[/b]" % type, message)
+		message = "%s: %s" % [type, str(message)]
 	else:
 		print(message)
 	var label = Label.new()

@@ -1,7 +1,8 @@
-[gd_scene load_steps=23 format=3 uid="uid://d0fkfta4y2fwb"]
+[gd_scene load_steps=24 format=3 uid="uid://d0fkfta4y2fwb"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_70sgl"]
 [ext_resource type="Texture2D" uid="uid://cg4jbdyiluftr" path="res://assets/foxyspritesheet.png" id="1_cw6ci"]
+[ext_resource type="PackedScene" uid="uid://66ktssq77jyu" path="res://scenes/impact_particles.tscn" id="2_em8ha"]
 [ext_resource type="Texture2D" uid="uid://cydypm22qjf02" path="res://icon.svg" id="3_3lf41"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_x0kwo"]
@@ -16,46 +17,6 @@ point_count = 2
 min_value = -1.0
 _data = [Vector2(0.291332, -0.378048), 0.0, 0.0, 0, 0, Vector2(0.523682, 1), 0.0, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="Animation" id="Animation_1lll3"]
-resource_name = "melee"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Pivot/Sword:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Pivot/Sword/CollisionShape2D:disabled")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, true]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Pivot/Sword:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.338899, -0.180758, 1.84629]
-}
 
 [sub_resource type="Animation" id="Animation_xfihb"]
 length = 0.001
@@ -124,6 +85,46 @@ tracks/0/keys = {
 "values": [13]
 }
 
+[sub_resource type="Animation" id="Animation_1lll3"]
+resource_name = "melee"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot/Sword:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Pivot/Sword/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Pivot/Sword:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.338899, -0.180758, 1.84629]
+}
+
 [sub_resource type="Animation" id="Animation_ffp44"]
 resource_name = "walk"
 length = 0.4
@@ -187,6 +188,7 @@ graph_offset = Vector2(165.135, 3)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_70sgl")
+ImpactParticles = ExtResource("2_em8ha")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -250,3 +252,6 @@ texture = ExtResource("3_3lf41")
 tree_root = SubResource("AnimationNodeStateMachine_dypxa")
 anim_player = NodePath("../AnimationPlayer")
 parameters/playback = SubResource("AnimationNodeStateMachinePlayback_7h2fw")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 32)

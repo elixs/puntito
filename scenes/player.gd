@@ -13,6 +13,10 @@ const HIT_SPEED = 300.0
 @onready var animation_tree = $AnimationTree
 @onready var playback = animation_tree.get("parameters/playback")
 @onready var sword = $Pivot/Sword
+@onready var ray_cast_2d = $RayCast2D
+
+
+@export var ImpactParticles: PackedScene
 
 var move_input = 0
 
@@ -40,7 +44,7 @@ func _ready():
 	
 
 func _physics_process(delta) -> void:
-	
+	Debug.print(global_position)
 	if is_multiplayer_authority():
 		if not is_on_floor():
 			velocity.y += GRAVITY * delta
@@ -51,16 +55,15 @@ func _physics_process(delta) -> void:
 		move_input = Input.get_axis("move_left", "move_right")
 		
 		velocity.x = move_toward(velocity.x, move_input * SPEED, ACCELERATION * delta)
-
-		move_and_slide()
 		
 		if Input.is_action_just_pressed("melee"):
 			melee.rpc()
 		
 		rpc("send_data", global_position, velocity, move_input)
+		
+	move_and_slide()
 	
 	# Animation
-	
 	if move_input != 0:
 		pivot.scale.x = sign(move_input)
 	
@@ -69,13 +72,16 @@ func _physics_process(delta) -> void:
 	else:
 		playback.travel("idle")
 	
-
+	if ray_cast_2d.is_colliding():
+		modulate = Color.BURLYWOOD
+	else:
+		modulate = Color.DEEP_SKY_BLUE
 	
-	
-
 @rpc("unreliable_ordered")
 func send_data(pos: Vector2, vel: Vector2, mi: float) -> void:
-	global_position = lerp(global_position, pos, 0.5)
+	var weight = (pos.distance_squared_to(global_position) - 1000) / 3000
+	weight = min(max(0.5, weight), 1.0)
+	global_position = lerp(global_position, pos, weight)
 	velocity = lerp(velocity, vel, 0.5)
 	move_input = mi
 
@@ -86,19 +92,28 @@ func hit(hit_position: Vector2) -> void:
 
 
 @rpc("call_local", "reliable")
-func hit2(enemy: Node2D) -> void:
+func launch(enemy: Node2D) -> void:
 	enemy.velocity = (global_position - enemy.global_position).normalized() * HIT_SPEED + Vector2.UP * 300
-
 
 
 func _on_body_entered(body: Node) -> void:
 	if body is Player and body != self:
 		var player = body as Player
-		Debug.print(is_multiplayer_authority())
-#		player.rpc("hit", global_position)
-		rpc("hit2", player)
-#		player.hit.rpc(global_position)
+		launch.rpc(player)
+		_spawn_impact_particles.rpc(body.global_position)
+
 
 @rpc("call_local", "reliable")
 func melee() -> void:
 	playback.call_deferred("travel", "melee")
+
+func _exit_tree():
+	Debug.print("oh no")
+
+@rpc("call_local", "reliable")
+func _spawn_impact_particles(pos: Vector2) -> void:
+	if not ImpactParticles:
+		return
+	var impact_particles = ImpactParticles.instantiate()
+	add_sibling(impact_particles)
+	impact_particles.global_position = pos

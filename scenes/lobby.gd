@@ -33,7 +33,7 @@ func _ready():
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	start.show()
 	pending.hide()
-	user.text = OS.get_environment("USERNAME")
+	user.text = OS.get_environment("USERNAME") + str(randi() % 1000)
 	
 	go.pressed.connect(_on_go_pressed)
 	
