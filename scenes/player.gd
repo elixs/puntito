@@ -91,15 +91,15 @@ func hit(hit_position: Vector2) -> void:
 	velocity = (global_position - hit_position).normalized() * HIT_SPEED + Vector2.UP * 300
 
 
-@rpc("call_local", "reliable")
-func launch(enemy: Node2D) -> void:
-	enemy.velocity = (global_position - enemy.global_position).normalized() * HIT_SPEED + Vector2.UP * 300
+@rpc("reliable", "any_peer")
+func launch(laucher_position: Vector2) -> void:
+	velocity = (global_position - laucher_position).normalized() * HIT_SPEED + Vector2.UP * 300
 
 
 func _on_body_entered(body: Node) -> void:
 	if body is Player and body != self:
 		var player = body as Player
-		launch.rpc(player)
+		player.launch.rpc(global_position)
 		_spawn_impact_particles.rpc(body.global_position)
 
 
